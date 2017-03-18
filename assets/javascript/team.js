@@ -14,10 +14,11 @@ var team = {
     database: firebase.database(),
     username: '',
     work: [],
+
     initiate: function() {
 
         team.username = JSON.parse(localStorage.getItem('username'));
-        console.log(team.username);
+        // console.log(team.username);
         var updates = {};
         updates['users/' + team.username + '/status'] = 'online';
         team.database.ref().update(updates);
@@ -27,7 +28,7 @@ var team = {
         //     })
         // });
         team.database.ref('users/' + team.username).once('value', function(snap) {
-            console.log(snap.val());
+            // console.log(snap.val());
             team.addWorkOrders();
             team.onDisconnect();
         });
@@ -54,9 +55,9 @@ var team = {
             snapshot.forEach(function(childsnapshot) {
                 var childData = childsnapshot.val();
 
-                console.log(team.username);
+                // console.log(team.username);
                 if (team.username === childData.assign) {
-                    console.log(childData.comment);
+                    // console.log(childData.comment);
                     var comments = childData.comment;
                     
                     newDiv = $("<div>");
@@ -71,7 +72,7 @@ var team = {
                     newDiv.append(
                         '<ul class="list-group">'
 
-                        + '<li class="list-group-item">' + childData.key + '</li>' + '<li class="list-group-item">' + childData.date + '</li>' + '<li class="list-group-item" id="workOrder">' + childData.task + '</li>'
+                        + '<li class="list-group-item">' + "WORK ORDER #: " + childData.ref + '</li>' + '<li class="list-group-item">' + childData.date + '</li>' + '<li class="list-group-item" id="workOrder">' + childData.task + '</li>'
 
                         + '<label for="comment" id="newComment">COMMENT<br> </label>' + '<input class="form-control" id="' + childData.ref + '"  type="text">' + '</ul>');
                     newDiv.append(newButComplete);
@@ -92,7 +93,7 @@ var team = {
                          // newComment.text(comments[i]);
                          newC.html("COMMENT#"+[i] + ":" + " " + comments[i]);
                          $('#wO' + childData.ref).append(newC);
-                         console.log(childData.ref);
+                         // console.log(childData.ref);
 
                     }
 
@@ -101,7 +102,6 @@ var team = {
 
 
                     $(".commit").on("click", function() {
-
                         // event.preventDefault();
                         var butValue = $(this).val();
                         var comment = $("#" + butValue).val();
@@ -109,7 +109,7 @@ var team = {
                         var newLine = $("<div class='form-control'>");
                         newLine.html(comment);
                         var keyValue = $(this).attr("key");
-                        console.log(keyValue);
+                        // console.log(keyValue);
 
                         if (comment.length > 0) {
                             $("#wO" + butValue).append(newLine);
@@ -131,7 +131,7 @@ var team = {
                             }
 
                                team.database.ref("work/" + keyValue).once("value", function(snap) {
-                                console.log(snap.val());
+                                // console.log(snap.val());
                                 var butObject = new Object();
                                 butObject.issuer = snap.val().issuer;
                                 butObject.assign = snap.val().assign;
@@ -141,7 +141,7 @@ var team = {
                                 butObject.comment = snap.val().comment;
                                 butObject.key = snap.val().key;
                                 butObject.comment.push(comment);
-                                console.log(butObject);
+                                // console.log(butObject);
                                 var updates = {};
                                 updates['work/'+ butObject.key] = butObject;
                                 team.database.ref().update(updates);
@@ -156,8 +156,8 @@ var team = {
                             // team.database.ref().push({
                             //    woObject.comment: comment 
                             // });
-                            console.log(team.database.comment)
-                            console.log(childData.comment);
+                            // console.log(team.database.comment)
+                            // console.log(childData.comment);
 
                         
 
@@ -169,7 +169,7 @@ var team = {
             });
 
         }, function(errorObject) {
-            console.log("Errors handled: " + errorObject.code);
+            // console.log("Errors handled: " + errorObject.code);
         });
 
     }, //  end of work order function
@@ -181,19 +181,6 @@ var team = {
 $(document).ready(team.initiate);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // initializing button for searching for srchYouTube
 $("#srchYouTube").on("click", function(event) {
     var title = $("#youTube").val().trim();
@@ -201,7 +188,7 @@ $("#srchYouTube").on("click", function(event) {
         $("#srchDisplay").empty();
         event.preventDefault();
 
-        console.log(title);
+        // console.log(title);
         var url = "https://www.googleapis.com/youtube/v3/search?q=";
         var key = "&key=AIzaSyAKu1os4pi3oY7ThPvVeNefdWdXHRldy9Y&part=snippet";
         var queryUrl = url + title + key;
@@ -211,12 +198,12 @@ $("#srchYouTube").on("click", function(event) {
             method: "GET"
 
         }).done(function(response) {
-            console.log(response);
-            console.log(response.items[0].id.videoId);
+            // console.log(response);
+            // console.log(response.items[0].id.videoId);
 
             // this variable holds the value of an embed video for youtube to pass into the iframe as a srchDisplay
             var youTubeVideo = "https://www.youtube.com/embed/" + response.items[0].id.videoId;
-            console.log(youTubeVideo);
+            // console.log(youTubeVideo);
 
             var newVideo = $("<iframe>");
             newVideo.attr("src", youTubeVideo);
@@ -230,18 +217,18 @@ $("#srchYouTube").on("click", function(event) {
 
 
 
-
+// search stack exchange function
 $("#srchStack").on("click", function(event) {
     $("#srchDisplay").empty();
 
     var stackTitle = $("#stack").val().trim();
-    console.log(stackTitle.length);
+    // console.log(stackTitle.length);
     for (var d = 0; d < stackTitle.length; d++) {
         stackTitle = stackTitle.replace(" ", "+");
     }
 
 
-    console.log(stackTitle + " StackTitle");
+    // console.log(stackTitle + " StackTitle");
     event.preventDefault();
 
     if (stackTitle.length > 0) {
@@ -249,16 +236,16 @@ $("#srchStack").on("click", function(event) {
         var key = "&site=mechanics&key=muJRZpFofGxd8uF9NSL7Kg((";
 
         var queryUrl = url + stackTitle + key;
-        console.log(queryUrl);
-        console.log(stackTitle);
+        // console.log(queryUrl);
+        // console.log(stackTitle);
 
         $.ajax({
 
             url: queryUrl,
             method: "GET"
         }).done(function(response) {
-            console.log(response);
-            console.log(response.items[0].link);
+            // console.log(response);
+            // console.log(response.items[0].link);
             for (var i = 0; i < 10; i++) {
                 var stackLink = response.items[i].link;
 
@@ -277,30 +264,9 @@ $("#srchStack").on("click", function(event) {
     $("#stack").val("");
 })
 
-
+// set attribute function
 $("<a>").on("click", function(event) {
 
     $("<a>").attr("target", $("#srchDisplay"));
 
-
-
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Ben's suggestion
-// var query = new Object();
-// var url = [endpointURL?];
-// query.key = value;  adds to the object query
-// url += $.param(query);  passes the object to the param function that builds the query url titled url
